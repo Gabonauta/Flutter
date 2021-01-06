@@ -11,7 +11,8 @@ class _InputPageState extends State<InputPage> {
   String _nombre = "";
   String _email = "";
   String _fecha = "";
-
+  String _opcionSeleccionada = 'Volar';
+  List<String> _poderes = ['Volar', 'Rayos X', 'Super aliento', 'Super Fuerza'];
   TextEditingController _inputFieldFechaController =
       new TextEditingController();
 
@@ -31,6 +32,8 @@ class _InputPageState extends State<InputPage> {
           _crearPassword(),
           Divider(),
           _crearFecha(context),
+          Divider(),
+          _crearDropdown(),
           Divider(),
           _crearPersona(),
         ],
@@ -55,13 +58,6 @@ class _InputPageState extends State<InputPage> {
           _nombre = valor;
         });
       },
-    );
-  }
-
-  _crearPersona() {
-    return ListTile(
-      title: Text('El nombre es: $_nombre'),
-      subtitle: Text("El email es: $_email"),
     );
   }
 
@@ -132,12 +128,50 @@ class _InputPageState extends State<InputPage> {
         firstDate: new DateTime(1990),
         lastDate: new DateTime(2021),
         locale: Locale('es', 'ES'));
-    locale:
     if (picked != null) {
       setState(() {
         _fecha = picked.toString();
         _inputFieldFechaController.text = _fecha;
       });
     }
+  }
+
+  List<DropdownMenuItem<String>> get getOpcionesDropdown {
+    List<DropdownMenuItem<String>> lista = new List();
+    _poderes.forEach((element) {
+      lista.add(DropdownMenuItem(
+        child: Text(element),
+        value: element,
+      ));
+    });
+    return lista;
+  }
+
+  Widget _crearDropdown() {
+    return Row(
+      children: [
+        Icon(Icons.select_all),
+        SizedBox(width: 30.0),
+        Expanded(
+          child: DropdownButton(
+            value: _opcionSeleccionada,
+            items: getOpcionesDropdown,
+            onChanged: (opt) {
+              setState(() {
+                _opcionSeleccionada = opt;
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  _crearPersona() {
+    return ListTile(
+      title: Text('El nombre es: $_nombre'),
+      subtitle: Text("El email es: $_email"),
+      trailing: Text(_opcionSeleccionada),
+    );
   }
 }
